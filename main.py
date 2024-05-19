@@ -3,16 +3,23 @@
 import json
 import assemblyai as aai
 
-aai.settings.api_key = "c06f79aec5ac4a008bd6ec0492b852a5"
+aai.settings.api_key = "9dedf671889f46fd9ac04f1276f5a9ad"
 transcriber = aai.Transcriber()
 with open("output.json", "r") as file:
     data = json.load(file)
-for index, item in enumerate(data):
-    title = item['music_name']
-    link = item['music_link']
+for item in range(0,400):
+    title = data[item]['music_name']
+    link = data[item]['music_link']
+    try:
 
-    transcript = transcriber.transcribe(link)
-    # transcript = transcriber.transcribe("./my-local-audio-file.wav")
+        transcript = transcriber.transcribe(link)
+        if transcript.status == aai.TranscriptStatus.error:
+            print(transcript.error)
+        else:
+            print("success")
+    except Exception as e:
+        print(e)
+
     text = f"{title}\n\n" + transcript.text
-    with open(f"script{index}.txt", "w") as file:
+    with open(f"script{item}.txt", "w", encoding='utf-8') as file:
         file.write(text)
